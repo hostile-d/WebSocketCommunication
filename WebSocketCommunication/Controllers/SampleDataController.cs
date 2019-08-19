@@ -13,12 +13,13 @@ namespace WebSocketCommunication.Controllers
     [Route("api/[controller]")]
     public class SampleDataController : Controller
     {
-        private readonly IDataRepository Data;
+        private readonly IDataRepository Repo;
 
-        SampleDataController(IDataRepository data)
+        public SampleDataController(IDataRepository repo)
         {
-            Data = data;
+            Repo = repo;
         }
+
         [HttpGet]
         public async Task Get()
         {
@@ -38,8 +39,9 @@ namespace WebSocketCommunication.Controllers
 
         private async Task GetTable(HttpContext context, WebSocket webSocket)
         {
-            var serializedRow = JsonConvert.SerializeObject(Data);
-            var bytes = Encoding.ASCII.GetBytes(serializedRow);
+            var table = Repo.Table;
+            var json = JsonConvert.SerializeObject(table);
+            var bytes = Encoding.UTF8.GetBytes(json);
             var arraySegment = new ArraySegment<byte>(bytes);
 
             await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);

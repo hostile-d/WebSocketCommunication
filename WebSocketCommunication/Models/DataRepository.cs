@@ -4,15 +4,14 @@ namespace WebSocketCommunication.Models
 {
     public class DataRepository : IDataRepository
     {
-        public DataTable Table { get; set; }
+        private readonly DataTable _dataTable;
+        public DataTable Data => _dataTable;
         public DataRepository()
         {
-            GenerateTable();
-        }
-        public void GenerateTable()
-        {
-            var tableInstance = new Table(10000);
-            Table = tableInstance.GenerateTable();
+            if (_dataTable == null)
+            {
+                _dataTable = Table.GenerateTable(10000);
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ namespace WebSocketCommunication.Controllers
 
         private async Task GetTable(HttpContext context, WebSocket webSocket)
         {
-            var table = Repo.Table;
+            var table = Repo.Data;
             var json = JsonConvert.SerializeObject(table);
             var bytes = Encoding.UTF8.GetBytes(json);
             var arraySegment = new ArraySegment<byte>(bytes);

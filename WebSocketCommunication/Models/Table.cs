@@ -8,15 +8,10 @@ namespace WebSocketCommunication.Models
 {
     public class Table
     {
-        private int RowsAmount { get; set; }
         private static Random random = new Random();
 
-        public Table(int rows)
-        {
-            RowsAmount = rows;
-        }
 
-        public DataTable GenerateTable()
+        public static DataTable GenerateTable(int rowsAmount)
         {
             var table = new DataTable();
 
@@ -24,7 +19,7 @@ namespace WebSocketCommunication.Models
             table.Columns.Add("stringColumn", typeof(string));
             table.Columns.Add("date", typeof(string));
 
-            for (var i = 0; i < RowsAmount; i++)
+            for (var i = 0; i < rowsAmount; i++)
             {
                 var date = DateTime.Now.ToString("d MMMM, hh:mm", CultureInfo.CreateSpecificCulture("ru-RU"));
                 table.Rows.Add(i, RandomString(15), date);
@@ -33,7 +28,7 @@ namespace WebSocketCommunication.Models
             return table;
         }
 
-        public string RandomString(int length)
+        public static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Range(1, length).Select(_ => chars[random.Next(chars.Length)]).ToArray());

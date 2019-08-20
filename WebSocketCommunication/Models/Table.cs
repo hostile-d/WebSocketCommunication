@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
@@ -8,8 +7,7 @@ namespace WebSocketCommunication.Models
 {
     public class Table
     {
-        private static Random random = new Random();
-
+        private static readonly Random _random = new Random();
 
         public static DataTable GenerateTable(int rowsAmount)
         {
@@ -31,7 +29,7 @@ namespace WebSocketCommunication.Models
         public static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Range(1, length).Select(_ => chars[random.Next(chars.Length)]).ToArray());
+            return new string(Enumerable.Range(1, length).Select(_ => chars[_random.Next(chars.Length)]).ToArray());
         }
     }
 }

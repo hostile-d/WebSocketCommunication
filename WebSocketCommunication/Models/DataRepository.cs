@@ -9,7 +9,6 @@ namespace WebSocketCommunication.Models
 {
     public class DataRepository : IDataRepository, IHostedService, IDisposable
     {
-        private Table _tableFactory;
         private DataTable _dataTable;
         private static readonly Random _random = new Random();
         public DataTable Data => _dataTable;
@@ -20,32 +19,22 @@ namespace WebSocketCommunication.Models
         {
             if (_dataTable == null)
             {
-                _tableFactory = new Table();
-                _dataTable = _tableFactory.GenerateTable(10000);
+                _dataTable = Table.GenerateTable(10000);
                 _logger = logger;
             }
         }
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
 
-        //public DataRow Update(int id)
-        //{
-        //    return _tableFactory.GenerateRow(id);
-        //}
-
-        public DataRow Insert(DataRow row)
+        public DataRow Update(int id)
         {
-            throw new NotImplementedException();
+            return Table.GenerateRow(id, _dataTable);
         }
 
         private void UpdateRandomRows()
         {
-            for (var i = 0; i < 100; i++)
+            for (var i = 0; i < 5000; i++)
             {
                 var randomId = _random.Next(0, _dataTable.Rows.Count);
-                //Update(randomId);
+                Update(randomId);
             }
         }
 
@@ -53,7 +42,7 @@ namespace WebSocketCommunication.Models
         {
             _logger.LogInformation("Timed Background Service is starting.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
 
             return Task.CompletedTask;
         }

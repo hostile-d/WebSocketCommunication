@@ -10,7 +10,7 @@ namespace WebSocketCommunication.Models
         private static readonly Random _random = new Random();
 
 
-        public DataTable GenerateTable(int rowsAmount)
+        public static DataTable GenerateTable(int rowsAmount)
         {
             var table = new DataTable();
 
@@ -33,13 +33,20 @@ namespace WebSocketCommunication.Models
         {
             var date = DateTime.Now.ToString("d MMMM, hh:mm", CultureInfo.CreateSpecificCulture("ru-RU"));
 
-            var row = table.Rows.Contains(id) ? table.Rows[id] : table.NewRow();
+            DataRow row;
 
-            row[0] = id;
-            row[1] = RandomString(15);
-            row[2] = date;
+            if (table.Rows.Contains(id))
+            {
+                row = table.Rows[id];
 
-            table.Rows.Add(row);
+                row[0] = id;
+                row[1] = RandomString(15);
+                row[2] = date;
+            }
+            else
+            {
+                row = table.Rows.Add(id, RandomString(15), date);
+            }
 
             return row;
         }

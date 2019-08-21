@@ -7,7 +7,7 @@ namespace WebSocketCommunication.Models
     {
         DataTable Data { get; }
         void Delete(int id);
-        DataRow Update(int id, DataRow row);
+        //DataRow Update(int id);
         DataRow Insert(DataRow row);
 
     }

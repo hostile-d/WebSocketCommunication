@@ -12,6 +12,7 @@ namespace WebSocketCommunication.Models
         private DataTable _dataTable;
         private static readonly Random _random = new Random();
         public DataTable Data => _dataTable;
+        private Action<DataTable> ControllerCallback { get; set; }
         private readonly ILogger _logger;
         private Timer _timer;
 
@@ -23,6 +24,12 @@ namespace WebSocketCommunication.Models
                 _logger = logger;
             }
         }
+
+        public void Subscribe(Action<DataTable> callback)
+        {
+            ControllerCallback = callback;
+        }
+
 
         public DataRow Update(int id)
         {
@@ -42,7 +49,7 @@ namespace WebSocketCommunication.Models
         {
             _logger.LogInformation("Timed Background Service is starting.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
             return Task.CompletedTask;
         }
@@ -50,6 +57,10 @@ namespace WebSocketCommunication.Models
         private void DoWork(object state)
         {
             UpdateRandomRows();
+            if (_dataTable != null && ControllerCallback != null)
+            {
+                ControllerCallback(_dataTable);
+            }
             _logger.LogInformation("Timed Background Service is working.");
         }
 

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace WebSocketCommunication.Models
 {
     public interface IDataRepository
     {
-        DataTable Data { get; }
-        DataRow Update(int id);
-
+        void Subscribe(Action<DataTable> callback);
     }
 }

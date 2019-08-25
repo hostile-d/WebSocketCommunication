@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebSocketCommunication.Models;
 using Newtonsoft.Json;
 using System.Data;
+using System.Linq;
 
 namespace WebSocketCommunication.Controllers
 {
@@ -17,6 +18,7 @@ namespace WebSocketCommunication.Controllers
         private readonly IDataRepository _dataRepository;
 
         private DataTable _data = null;
+        private int _lastReceivedRevision = -1;
 
         public SampleDataController(IDataRepository repo)
         {
@@ -49,15 +51,18 @@ namespace WebSocketCommunication.Controllers
 
         private void ServiceCallback(DataTable table)
         {
-            _data = table;
+            _data = TableHelper.FilterByRevision(table, _lastReceivedRevision);
+            _lastReceivedRevision++;
         }
 
         private async Task SendData(HttpContext context, WebSocket webSocket)
         {
             if (webSocket != null && webSocket.State == WebSocketState.Open)
             {
+
                 while (!context.RequestAborted.IsCancellationRequested)
                 {
+
                     if (_data != null)
                     {
                         var json = JsonConvert.SerializeObject(_data);

@@ -12,6 +12,7 @@ namespace WebSocketCommunication.Models
         private DataTable _dataTable;
         private static readonly Random _random = new Random();
         public DataTable Data => _dataTable;
+        private int _revision = 0;
         private Action<DataTable> ControllerCallback { get; set; }
         private readonly ILogger _logger;
         private Timer _timer;
@@ -20,7 +21,7 @@ namespace WebSocketCommunication.Models
         {
             if (_dataTable == null)
             {
-                _dataTable = Table.GenerateTable(10000);
+                _dataTable = TableHelper.GenerateTable(10000);
                 _logger = logger;
             }
         }
@@ -33,12 +34,13 @@ namespace WebSocketCommunication.Models
 
         public DataRow Update(int id)
         {
-            return Table.GenerateRow(id, _dataTable);
+            return TableHelper.GenerateRow(id, _dataTable, _revision);
         }
 
         private void UpdateRandomRows()
         {
-            for (var i = 0; i < 5000; i++)
+            _revision++;
+            for (var i = 0; i < 1000; i++)
             {
                 var randomId = _random.Next(0, _dataTable.Rows.Count);
                 Update(randomId);
@@ -49,7 +51,7 @@ namespace WebSocketCommunication.Models
         {
             _logger.LogInformation("Timed Background Service is starting.");
 
-            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
 
             return Task.CompletedTask;
         }

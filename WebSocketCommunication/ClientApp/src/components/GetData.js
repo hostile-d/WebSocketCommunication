@@ -22,10 +22,12 @@ export class GetData extends Component {
         });
     }
     renderTableRows = table => {
+        console.log(table);
         return table
             ? table.map(row => (
                   <tr key={row.id}>
                       <td>{row.id}</td>
+                      <td>{row.revision}</td>
                       <td>{row.stringColumn}</td>
                       <td>{row.date}</td>
                   </tr>
@@ -40,6 +42,7 @@ export class GetData extends Component {
                     <thead>
                         <tr>
                             <th>Id</th>
+                            <th>Revision</th>
                             <th>String Column</th>
                             <th>Date</th>
                         </tr>
